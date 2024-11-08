@@ -33,6 +33,8 @@ services:
       ENCRYPT_URL: http://encrypt:5000
       FRONT_URL: http://127.0.0.1:3000
       KEY: 9f2d34a1b7c8e0ff2a4e6b12f9d0cba3
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
     depends_on:
       - postgres
       - encrypt
@@ -41,7 +43,7 @@ services:
     restart: always
 
   encrypt:
-    image: encrypt
+    image: minby93/encrypt:latest
     ports:
       - "5000:5000"
 
