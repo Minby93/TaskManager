@@ -27,11 +27,12 @@ services:
       - postgres
 
   back:
-    image: back
+    image: minby93/back:latest
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/web
       ENCRYPT_URL: http://encrypt:5000
       FRONT_URL: http://127.0.0.1:3000
+      KEY: 9f2d34a1b7c8e0ff2a4e6b12f9d0cba3
     depends_on:
       - postgres
       - encrypt
@@ -45,7 +46,7 @@ services:
       - "5000:5000"
 
   front:
-    image: front
+    image: minby93/front:latest
     ports:
       - "3000:3000"
     depends_on:
