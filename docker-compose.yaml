@@ -1,0 +1,60 @@
+version: "3"
+
+services:
+  postgres:
+    image: postgres:14.13-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: "web"
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    ports:
+      - 5544:5432
+    volumes:
+      - postgres:/var/lib/postgresql-14/data
+
+  pgadmin:
+    image: dpage/pgadmin4:8.12
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@pgadmin.com
+      PGADMIN_DEFAULT_PASSWORD: password
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - 15432:80
+    volumes:
+      - pgadmin:/var/lib/pgadmin-8
+    depends_on:
+      - postgres
+
+  back:
+    image: back
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/web
+      ENCRYPT_URL: http://encrypt:5000
+      FRONT_URL: http://127.0.0.1:3000
+    depends_on:
+      - postgres
+      - encrypt
+    ports:
+      - "8080:8080"
+    restart: always
+
+  encrypt:
+    image: encrypt
+    ports:
+      - "5000:5000"
+
+  front:
+    image: front
+    ports:
+      - "3000:3000"
+    depends_on:
+      - back
+    environment:
+      REACT_APP_BACK_URL: http://back:8080
+      REACT_APP_LOGIN_BACK_URL: http://back:8080/login
+
+
+volumes:
+  postgres:
+  pgadmin:
